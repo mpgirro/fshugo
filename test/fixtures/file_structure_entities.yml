@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  path: MyString
+  bytes: 1
+  ctime: 2014-07-17 16:31:25
+  mtime: 2014-07-17 16:31:25
+  type: 
+
+two:
+  path: MyString
+  bytes: 1
+  ctime: 2014-07-17 16:31:25
+  mtime: 2014-07-17 16:31:25
+  type: 
