@@ -11,20 +11,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140717154935) do
+ActiveRecord::Schema.define(version: 20140717171342) do
 
   create_table "file_structure_entities", force: true do |t|
     t.string   "path"
     t.integer  "bytes"
     t.datetime "ctime"
     t.datetime "mtime"
-    t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "file_count"
     t.integer  "item_count"
     t.integer  "mime_id"
     t.integer  "kind_id"
+    t.string   "entity_type"
+  end
+
+  create_table "kind_tabs", force: true do |t|
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "mime_tabs", force: true do |t|
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end
