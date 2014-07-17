@@ -1,17 +1,28 @@
 <div id="results_container">
-	<h1 id="queryline">search results for "<%= @query %>"</h1>
+	
+	<div id="result_search_form">
+		<%= form_tag( 'search', {:method => 'get'}) do %>
+		   <%= text_field_tag :search_box, @query %>
+		   <% # => <input id="search_box" name="search_box" placeholder="Start your search" type="text" /> %>
+		   <!--<%= submit_tag 'Search', :id => "search_button" %>-->
+		<% end %>
+	</div>
+
+	<!--<h1 id="queryline">search results for "<%= @query %>"</h1>-->
 
 	<% unless @results.nil? %>
+		<ol class="result_list">
 		<% @results.each do |res| %>
-		<div class="result_item">
+		  <li class="result_item">
 			<p class="item_name"><%= res.path.split("/").last %></p>
 			<div class="item_info">
 				<p class="item_descr"><%= pretty_bytes_string(res.bytes) %> <span style="padding:3px">•</span> <%= res.path %> </p>
 				<!--<p class="item_path"><%= res.path %></p>-->
 			</div>
-		</div>
+		  </li>
 		<!--<hr class="seperator" align="left" width="400" />-->
 		<% end %>
+		</ol>
 	<% else %>
 		<p>Nothing found</p>
 	<% end %>
