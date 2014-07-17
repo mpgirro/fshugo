@@ -61,13 +61,13 @@ json_data = JSON.parse(json_string, :max_nesting => 100)
 # make mime tab
 json_data["mime_tab"].each do |entry|
   puts "processing #{entry["id"]} : #{entry["description"]}"
-  #MimeTab.create( {:id => entry["id"], :description => } entry["description"] )
+  MimeTab.create( {:id => entry["id"], :description => } entry["description"] )
 end
 
 # make kind tab
 json_data["kind_tab"].each do |entry|
   puts "processing #{entry["id"]} : #{entry["description"]}"
-  #KindTab.create( {:id => entry["id"], :description => } entry["description"] )
+  KindTab.create( {:id => entry["id"], :description => } entry["description"] )
 end
 
 parse_fstruct(json_data["file_structure"])
