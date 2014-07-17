@@ -5,7 +5,10 @@
 		<% @results.each do |res| %>
 		<div class="result_item">
 			<p class="item_name"><%= res.path.split("/").last %></p>
-			<p class="item_path"><%= res.path %></p>
+			<div class="item_info">
+				<p class="item_descr"><%= pretty_bytes_string(res.bytes) %> <span style="padding:3px">•</span> <%= res.path %> </p>
+				<!--<p class="item_path"><%= res.path %></p>-->
+			</div>
 		</div>
 		<!--<hr class="seperator" align="left" width="400" />-->
 		<% end %>
