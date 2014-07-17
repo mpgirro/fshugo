@@ -6,7 +6,6 @@ require 'json'
 def parse_fstruct(fstruct)
   
   fstruct.each do |entry|
-    
     case entry["type"]
     when "directory"
       FileStructureEntities.new( { 
@@ -31,8 +30,6 @@ def parse_fstruct(fstruct)
       } )
     end
   end
-  
-  
 end
 
 #APP_PATH = File.expand_path('../../config/application',  __FILE__)
@@ -76,11 +73,4 @@ end
 parse_fstruct(json_data["file_structure"])
 
 
-# ----
-
-def mk_entry(path)
-  if !path.blank?
-    Entry.create({:path => path})
-  end
-end
 
