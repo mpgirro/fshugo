@@ -1,9 +1,18 @@
-<div class="search_form">
-	<%= form_tag( :action => 'search', :method => "get") do %>
-	   <%= text_field_tag 'search_box', nil, placeholder: 'Start your search' %>
-	   <% # => <input id="search_box" name="search_box" placeholder="Start your search" type="text" /> %>
-	   
-	   <div id="deleteElem"><span id="xElem">x</span></div>
-	   <%= submit_tag 'Search', :id => "search_button" %>
-	<% end %>
+
+<div id="container">
+	<div id="search">
+		
+		<h2 id="tagline">
+			<span id="tagline-img"></span>
+			Gateway to way to much data
+		</h2>
+		
+		<div class="search_form">
+			<%= form_tag( :action => 'search', :method => "get") do %>
+			   <%= text_field_tag 'search_box', nil, placeholder: 'Search' %>
+			   <% # => <input id="search_box" name="search_box" placeholder="Start your search" type="text" /> %>
+			   <!--<%= submit_tag 'Search', :id => "search_button" %>-->
+			<% end %>
+		</div>
+	</div>
 </div>

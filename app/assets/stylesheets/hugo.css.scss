@@ -1,3 +1,101 @@
 // Place all the styles related to the hugo controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+#container{
+	position: absolute;
+	margin: auto;
+	width: 100%;
+	top: 40%;
+	left: 0;
+	right: 0;
+	z-index: 2;
+}
+
+#search {
+	max-width: 44em;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	float: none;
+	width: 50%;
+}
+
+#tagline-img{
+	background: url("search.png") no-repeat center;
+	width: 24px; 
+	height: 24px;
+	display: block;
+	float: left;
+	padding-right: 10px;
+}
+
+#tagline{
+	/*font-family:"DDG_ProximaNova","Proxima Nova","Helvetica Neue","Helvetica","Segoe UI","Nimbus Sans L","Liberation Sans","Open Sans",FreeSans,Arial,sans-serif;*/
+	font-family: Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+	font-size: 1.2em;
+	padding: 0.5em 0;
+	margin-left: 5px;
+	margin-bottom: 10px;
+	text-align: left;
+	color: #333333;
+}
+
+/* div container containing the form  */
+#search_form {
+	/*
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+	*/
+	display: block;
+	position: relative;
+}
+
+/* Style the search input field. */
+#search_box {
+    float: left; 
+    /*width: 500px;*/
+	width: 100%; 
+    height: 2.3em; 
+    line-height: 27px;
+    text-indent: 10px; 
+    font-family: arial, sans-serif; 
+    font-size: 1em; 
+    color: #333; 
+    background: #fff; 
+    border:solid 1px #d9d9d9; 
+    /* border-top:solid 1px #c0c0c0; */
+    /*border-right: none;*/
+}
+
+/* Syle the search button. Settings of line-height, font-size, text-indent used to hide submit value in IE */
+#search_button {
+	float: left; 
+	margin-left: 10px;
+    cursor: pointer; 
+    width: 70px; 
+    height: 31px; 
+    line-height: 0; 
+    font-size: 0; 
+    text-indent: -999px;
+    color: transparent;  
+    /* background: url("search.png") no-repeat #4d90fe center; */
+    /* background: url("search.png") no-repeat #5D5D5D center; */
+	background: url("search.png") no-repeat center;
+	/* border: 1px solid #3079ED; */
+	/* border: 1px solid #5D5D5D; */
+	border:solid 1px #d9d9d9; 
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px; 
+}
+/* Style the search button hover state */
+#search_button:hover {
+    background: url("search.png") no-repeat center #357AE8; 
+    border: 1px solid #2F5BB7;
+}
+/* Clear floats */
+.fclear {
+	clear: both
+}
