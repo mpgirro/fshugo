@@ -99,3 +99,38 @@
 .fclear {
 	clear: both
 }
+
+#results_container {
+	margin-left: 50px;
+}
+
+.result_item {
+	line-height: 25%;
+	margin-bottom: 40px;
+}
+
+.item_name {
+	font-family: helvetica;
+	font-size: 13pt;
+	color: #242424;
+	text-decoration: none;
+}
+
+.item_path {
+	font-family: arial;;
+	font-size: 9pt;
+	color: #5D5D5D;
+}
+
+h1#queryline {
+	font-family: avenir, helvetica;
+	font-size: 18pt;
+	color: #B0B0B0;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+
+
+
+

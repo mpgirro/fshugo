@@ -46,6 +46,6 @@ class HugoController < ApplicationController
     
   
     # render result page
-    render "hugo/results"
+    render "hugo/search_result"
   end
 end

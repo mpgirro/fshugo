@@ -1,0 +1,15 @@
+<div id="results_container">
+	<h1 id="queryline">search results for "<%= @query %>"</h1>
+
+	<% unless @results.nil? %>
+		<% @results.each do |res| %>
+		<div class="result_item">
+			<p class="item_name"><%= res.path.split("/").last %></p>
+			<p class="item_path"><%= res.path %></p>
+		</div>
+		<!--<hr class="seperator" align="left" width="400" />-->
+		<% end %>
+	<% else %>
+		<p>Nothing found</p>
+	<% end %>
+</div>
