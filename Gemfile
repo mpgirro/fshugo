@@ -38,3 +38,6 @@ gem 'spring',        group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+# We need this in order to have attr_accessible in Rails 4
+gem 'protected_attributes'
+
