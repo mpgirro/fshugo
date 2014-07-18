@@ -1,10 +1,9 @@
-<% content_for :title, "fshugo • search results for \"#{@query}\"" %>
 
 <div id="results_container">
 	
 	<div id="result_search_form">
 		<%= form_tag( 'search', {:method => 'get'}) do %>
-		   <%= text_field_tag :search_box, @query %>
+		   <%= text_field_tag :q, @query %>
 		   <% # => <input id="search_box" name="search_box" placeholder="Start your search" type="text" /> %>
 		   <!--<%= submit_tag 'Search', :id => "search_button" %>-->
 		<% end %>
@@ -12,7 +11,7 @@
 
 	<!--<h1 id="queryline">search results for "<%= @query %>"</h1>-->
 
-	<% unless @results.nil? %>
+	<% unless @results.nil? || @results.empty? %>
 		<ol class="result_list">
 		<% @results.each do |res| %>
 		  <li class="result_item">
@@ -31,6 +30,6 @@
 		<% end %>
 		</ol>
 	<% else %>
-		<p>Nothing found</p>
+		<p class="item_name" style="margin-top: 140px; margin-left: 40px; position:absolute;">Nothing found</p>
 	<% end %>
 </div>

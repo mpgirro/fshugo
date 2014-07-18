@@ -34,6 +34,7 @@
 	/*font-family:"DDG_ProximaNova","Proxima Nova","Helvetica Neue","Helvetica","Segoe UI","Nimbus Sans L","Liberation Sans","Open Sans",FreeSans,Arial,sans-serif;*/
 	font-family: Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
 	font-size: 1.2em;
+	font-weight:normal;
 	padding: 0.5em 0;
 	margin-left: 5px;
 	margin-bottom: 10px;
@@ -54,7 +55,7 @@
 }
 
 /* Style the search input field. */
-#search_box {
+#q { /* former #search_box */
     float: left; 
     /*width: 500px;*/
 	width: 100%; 

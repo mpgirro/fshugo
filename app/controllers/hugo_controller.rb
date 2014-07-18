@@ -1,9 +1,10 @@
 class HugoController < ApplicationController
   
   def search
-    @query = params[:search_box]
+    @query = params[:q]
     
     return if @query.nil?
+    return if @query == ""
     
     puts "searching for: #{@query}"
     
