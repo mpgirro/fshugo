@@ -1,3 +1,5 @@
+<% content_for :title, "fshugo • search results for \"#{@query}\"" %>
+
 <div id="results_container">
 	
 	<div id="result_search_form">
@@ -16,7 +18,12 @@
 		  <li class="result_item">
 			<p class="item_name"><%= res.path.split("/").last %></p>
 			<div class="item_info">
-				<p class="item_descr"><%= pretty_bytes_string(res.bytes) %> <span style="padding:3px">•</span> <%= res.path %> </p>
+				<p class="item_descr">
+					<%= pretty_bytes_string(res.bytes) %> <span style="padding:3px">•</span> <%= res.entity_type %>
+				</p>
+				<p class="item_path">
+					<%= res.path %>
+				</p>
 				<!--<p class="item_path"><%= res.path %></p>-->
 			</div>
 		  </li>

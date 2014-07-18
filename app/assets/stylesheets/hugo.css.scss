@@ -111,9 +111,11 @@
 }
 
 .result_item {
-	line-height: 25%;
+	/*max-width: 600px;*/
+	/*line-height: 25%;*/
 	margin-bottom: 50px;
 	list-style-type: none;
+	line-height: 1.2em;
 }
 
 .item_name {
@@ -121,12 +123,32 @@
 	font-size: 13pt;
 	color: #242424;
 	text-decoration: none;
+	max-width: 900px;
+	padding: 0px;
+	margin: 0px;
 }
 
 .item_info {
+	font-family: helvetica, arial;;
+	font-size: 9pt;
+	color: #5D5D5D;
+	max-width: 900px;
+	padding: 0px;
+	margin: 0px;
+}
+
+.item_descr {
+	padding: 0px;
+	margin: 0px;
+}
+
+.item_path {
 	font-family: arial;;
 	font-size: 9pt;
 	color: #5D5D5D;
+	line-height: 1.2em;
+	padding: 0px;
+	margin: 0px;
 }
 
 h1#queryline {
