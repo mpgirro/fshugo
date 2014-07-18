@@ -36,7 +36,9 @@ class HugoController < ApplicationController
     end
     
     # do the search
-    @results = FileStructureEntity.where(cond)
+    result_records = FileStructureEntity.where(cond)
+    @results = result_records.to_a.map(&:serializable_hash)
+    #@results = FileStructureEntity.where(cond)
   
     # do the rating
     rate_results unless @results.nil? || @results.empty?
@@ -49,9 +51,9 @@ class HugoController < ApplicationController
   def rate_results()
     
     # build a map of all FSEs
+    namescore_map = name_scores # should be run as the first score
     bytescore_map = bytes_scores
     pathscore_map = slash_scores
-    namescore_map = name_scores
     score_map = {}
     @results.each do |resitem|
       score_map[resitem] = bytescore_map[resitem] + pathscore_map[resitem] + namescore_map[resitem]
@@ -72,7 +74,7 @@ class HugoController < ApplicationController
     # put the bytes of every resitem into a map
     score_map = {}
     @results.each do |resitem|
-      bytes = resitem.bytes
+      bytes = resitem["bytes"]
       score_map[resitem] = bytes
     end
     
@@ -93,14 +95,14 @@ class HugoController < ApplicationController
       # calculate how many keywords each file/directory name contains
       score = 0
       @keywords.each do |keyword|
-        score += 1 if File.basename(resitem.path).downcase.include?(keyword.downcase)
+        score += 1 if File.basename(resitem["path"]).downcase.include?(keyword.downcase)
       end
 
-      score_map[resitem] = score.to_f / @keywords.length.to_f
-    end
-    
-    score_map.each do |k,v|
-      puts "namescore #{v} : #{k.path}"
+      unless score == 0 
+        score_map[resitem] = score.to_f / @keywords.length.to_f
+      else
+        @results.delete(resitem)
+      end
     end
     
     # return normalized scores - more conains are better
@@ -119,7 +121,7 @@ class HugoController < ApplicationController
     # calculate the number of slashes in every path
     score_map = {}
     @results.each do |resitem|
-      slashcount = resitem.path.split('/').length-1
+      slashcount = resitem["path"].split('/').length-1
       score_map[resitem] = slashcount
     end
     
