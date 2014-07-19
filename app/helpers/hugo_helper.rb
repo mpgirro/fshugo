@@ -14,7 +14,7 @@ module HugoHelper
   end
   
   def file_kind_descr(resitem)
-    return "directory" if resitem["entity_type"] == "directory"
+    return "Directory" if resitem["entity_type"] == "directory"
     return KindTab.find(resitem["kind_id"]).description
   end
   
