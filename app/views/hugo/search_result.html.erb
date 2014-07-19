@@ -18,7 +18,9 @@
 			<p class="item_name"><%= res["path"].split("/").last %></p>
 			<div class="item_info">
 				<p class="item_descr">
-					<%= pretty_bytes_string(res["bytes"]) %> <span style="padding:3px">•</span> <%= res["entity_type"] %>
+					<%= pretty_bytes_string(res["bytes"]) %> 
+					<span style="padding:3px">•</span> 
+					<%= file_kind_descr(res) %>
 				</p>
 				<p class="item_path">
 					<%= res["path"] %>
