@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140717171342) do
+ActiveRecord::Schema.define(version: 20140719123932) do
 
   create_table "file_structure_entities", force: true do |t|
     t.string   "path"
@@ -31,12 +31,14 @@ ActiveRecord::Schema.define(version: 20140717171342) do
     t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "did"
   end
 
   create_table "mime_tabs", force: true do |t|
     t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "did"
   end
 
 end
