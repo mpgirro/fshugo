@@ -51,12 +51,12 @@ class HugoController < ApplicationController
   def rate_results()
     
     # build a map of all FSEs
-    namescore_map = name_scores # should be run as the first score
+    namescore_map = name_scores 
     bytescore_map = bytes_scores
     pathscore_map = slash_scores
     score_map = {}
     @results.each do |resitem|
-      score_map[resitem] = bytescore_map[resitem] + pathscore_map[resitem] + namescore_map[resitem]
+      score_map[resitem] = bytescore_map[resitem] + pathscore_map[resitem] + namescore_map[resitem] unless resitem.nil?
     end
 
     # now "sort" the map (sounds wrong, I know) by score
@@ -98,13 +98,13 @@ class HugoController < ApplicationController
         score += 1 if File.basename(resitem["path"]).downcase.include?(keyword.downcase)
       end
 
-      unless score == 0 
+      #unless score == 0 
         score_map[resitem] = score.to_f / @keywords.length.to_f
-      else
-        @results.delete(resitem)
-      end
+      #else
+      #  @results.delete(resitem)
+      #end
     end
-    
+
     # return normalized scores - more conains are better
     return normalize_highscores(score_map)
   end
@@ -124,7 +124,7 @@ class HugoController < ApplicationController
       slashcount = resitem["path"].split('/').length-1
       score_map[resitem] = slashcount
     end
-    
+
     # return normalized scores - small few slashes are better
     return normalize_lowscores(score_map)
   end
