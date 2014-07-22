@@ -12,5 +12,5 @@ module HugoHelper
     return "%.1f KB" % (bytes.to_f / BYTES_IN_KB) if bytes > BYTES_IN_KB
     return "#{bytes} B"
   end
-
+  
 end

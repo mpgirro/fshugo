@@ -1,12 +1,12 @@
 class HugoController < ApplicationController
-  
+    
   def search
     @query = params[:q]
     
     return if @query.nil?
     return if @query == ""
     
-    puts "searching for: #{@query}"
+    puts "searching for: #{capture_path(@query)}"
     
     @keywords = @query.split(" ")
     
@@ -14,8 +14,9 @@ class HugoController < ApplicationController
     conditions = []
     @keywords.each do |part|
       # substitute wildcard symbols
-      #part["%"] = '\%'
-      #part["_"] = '\_'
+      part = part.gsub("%", "\%")
+      part = part.gsub("_", "\_")
+      part = capture_path(part) # make sure dirlinks are searched correctly
       part =  "%" + part + "%"
       conditions << part
     end

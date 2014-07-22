@@ -1,11 +1,11 @@
 
-<% content_for :page_title, "fshugo • search results for \"#{@query}\"" %>
+<% content_for :page_title, "fshugo • search results for \"#{capture_path(@query)}\"" %>
 
 <div id="results_container">
 	
 	<div id="result_search_form">
 		<%= form_tag( 'search', {:method => 'get'}) do %>
-		   <%= text_field_tag :q, @query %>
+		   <%= text_field_tag :q, capture_path(@query) %>
 		   <% # => <input id="search_box" name="search_box" placeholder="Start your search" type="text" /> %>
 		   <!--<%= submit_tag 'Search', :id => "search_button" %>-->
 		<% end %>
@@ -19,7 +19,7 @@
 		  <li class="result_item">
 			<p class="item_name">
 				<% if item["entity_type"] == "directory" %>
-					<a class="diritem_link" href="?q=<%=CGI::escape(item["path"])%>"><%= item["path"].split("/").last %></a>
+					<a class="diritem_link" href="?q=<%=CGI::escape(escape_path(item["path"]))%>"><%= item["path"].split("/").last %></a>
 				<% else %>
 					<%= item["path"].split("/").last %>
 				<% end %>
