@@ -12,7 +12,6 @@
 		<div class="search_form">
 			<%= form_tag( 'search', {:method => 'get'}) do %>
 			   <%= text_field_tag :q, nil, placeholder: 'Search' %>
-			   <% # => <input id="search_box" name="search_box" placeholder="Start your search" type="text" /> %>
 			   <!--<%= submit_tag 'Search', :id => "search_button" %>-->
 			<% end %>
 		</div>

@@ -1,5 +1,5 @@
 
-<% content_for :page_title, "search results for \"#{@query}\"" %>
+<% content_for :page_title, "fshugo • search results for \"#{@query}\"" %>
 
 <div id="results_container">
 	
@@ -15,23 +15,22 @@
 
 	<% unless @results.nil? || @results.empty? %>
 		<ol class="result_list">
-		<% @results.each do |resitem| %>
+		<% @results.each do |item| %>
 		  <li class="result_item">
-			<p class="item_name"><%= resitem["path"].split("/").last %></p>
+			<p class="item_name"><%= item["path"].split("/").last %></p>
 			<div class="item_info">
 				<p class="item_descr">
-					<%= pretty_bytes_string(resitem["bytes"]) %> 
+					<%= pretty_bytes_string(item["bytes"]) %> 
 					<span class="sepdot">•</span> 
-					<% if resitem["entity_type"] == "directory" %>
-						Directory <span class="sepdot">•</span> <%= resitem["item_count"] %> Items
+					<% if item["entity_type"] == "directory" %>
+						Directory <span class="sepdot">•</span> <%= item["item_count"] %> Items
 					<% else %>
-						<%= KindTab.find(resitem["kind_id"]).description %>
+						<%= KindTab.find(item["kind_id"]).description %>
 					<% end %>
 				</p>
 				<p class="item_path">
-					<%= resitem["path"] %>
+					<%= item["path"] %>
 				</p>
-				<!--<p class="item_path"><%= resitem["path"] %></p>-->
 			</div>
 		  </li>
 		<!--<hr class="seperator" align="left" width="400" />-->
