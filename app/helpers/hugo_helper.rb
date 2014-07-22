@@ -12,11 +12,5 @@ module HugoHelper
     return "%.1f KB" % (bytes.to_f / BYTES_IN_KB) if bytes > BYTES_IN_KB
     return "#{bytes} B"
   end
-  
-  def file_kind_descr(resitem)
-    return "Directory" if resitem["entity_type"] == "directory"
-    return KindTab.find(resitem["kind_id"]).description
-  end
-  
-  
+
 end

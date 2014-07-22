@@ -1,4 +1,6 @@
 
+<% content_for :page_title, "search results for \"#{@query}\"" %>
+
 <div id="results_container">
 	
 	<div id="result_search_form">
@@ -13,25 +15,29 @@
 
 	<% unless @results.nil? || @results.empty? %>
 		<ol class="result_list">
-		<% @results.each do |res| %>
+		<% @results.each do |resitem| %>
 		  <li class="result_item">
-			<p class="item_name"><%= res["path"].split("/").last %></p>
+			<p class="item_name"><%= resitem["path"].split("/").last %></p>
 			<div class="item_info">
 				<p class="item_descr">
-					<%= pretty_bytes_string(res["bytes"]) %> 
-					<span style="padding:3px">•</span> 
-					<%= file_kind_descr(res) %>
+					<%= pretty_bytes_string(resitem["bytes"]) %> 
+					<span class="sepdot">•</span> 
+					<% if resitem["entity_type"] == "directory" %>
+						Directory <span class="sepdot">•</span> <%= resitem["item_count"] %> Items
+					<% else %>
+						<%= KindTab.find(resitem["kind_id"]).description %>
+					<% end %>
 				</p>
 				<p class="item_path">
-					<%= res["path"] %>
+					<%= resitem["path"] %>
 				</p>
-				<!--<p class="item_path"><%= res["path"] %></p>-->
+				<!--<p class="item_path"><%= resitem["path"] %></p>-->
 			</div>
 		  </li>
 		<!--<hr class="seperator" align="left" width="400" />-->
 		<% end %>
 		</ol>
 	<% else %>
-		<p class="item_name" style="margin-top: 140px; margin-left: 40px; position:absolute;">Nothing found</p>
+		<p class="item_name" id="notfound">Nothing found</p>
 	<% end %>
 </div>
