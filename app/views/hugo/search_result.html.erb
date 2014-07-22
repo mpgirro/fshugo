@@ -17,7 +17,13 @@
 		<ol class="result_list">
 		<% @results.each do |item| %>
 		  <li class="result_item">
-			<p class="item_name"><%= item["path"].split("/").last %></p>
+			<p class="item_name">
+				<% if item["entity_type"] == "directory" %>
+					<a class="diritem_link" href="?q=<%=CGI::escape(item["path"])%>"><%= item["path"].split("/").last %></a>
+				<% else %>
+					<%= item["path"].split("/").last %>
+				<% end %>
+			</p>
 			<div class="item_info">
 				<p class="item_descr">
 					<%= pretty_bytes_string(item["bytes"]) %> 
