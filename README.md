@@ -9,3 +9,13 @@ In order populate the database structure needed to perform search options, their
 **new**: will purge any existing database and repopulate it from scratch
 
 **extend**: will add a given inventory structure to the existing data pool. Use this to make search available for multiple file system not necessarily being connected in any way
+
+### Usage
+
+	bin/invimport.rb <new|extend> inventory_file
+
+## Screenshots
+
+![Screenshot 1](https://github.com/mpgirro/fshugo/blob/master/public/Screenshot%201.png)
+
+![Screenshot 2](https://github.com/mpgirro/fshugo/blob/master/public/Screenshot%202.png)
