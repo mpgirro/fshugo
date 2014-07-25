@@ -95,7 +95,7 @@ require APP_PATH
 # set Rails.env here if desired
 Rails.application.require_environment!
 
-USAGE = "Usage: invimport.rb new|extend inventory"
+USAGE = "Usage: invimport.rb <new|extend> inventory_file"
 SUPPORTED_OPERATIONS = ["new", "extend"]
 
 if ARGV[0].nil? 
@@ -146,8 +146,15 @@ json_data = JSON.parse(json_string, :max_nesting => 100)
 # first we have to reconstruct the lookup tables (we need them globally)
 @mime_tab = LookupTable.new
 @mime_tab.from_json(json_data["mime_tab"])
+
 @kind_tab = LookupTable.new
 @kind_tab.from_json(json_data["kind_tab"])
+
+@osx_tab = LookupTable.new
+@osx_tab.from_json(json_data["osx_tab"])
+
+@fshugo_tab = LookupTable.new
+@fshugo_tab.from_json(json_data["fshugo_tab"])
 
 case inv_operation
 when "new"
@@ -160,15 +167,23 @@ when "new"
   # make mime tab
   puts "filling MimeTab"
   json_data["mime_tab"].each do |entry|
-    #puts "processing #{entry["id"]} : #{entry["description"]}"
     MimeTab.create( {:descr_id => entry["id"], :description => entry["description"] })
   end
   
   # make kind tab
   puts "filling KindTab"
   json_data["kind_tab"].each do |entry|
-    #puts "processing #{entry["id"]} : #{entry["description"]}"
     KindTab.create( {:descr_id => entry["id"], :description => entry["description"] } )
+  end
+  
+  puts "filling OsxTab"
+  json_data["osx_tab"].each do |entry|
+    OsxTab.create( {:descr_id => entry["id"], :description => entry["description"] } )
+  end
+  
+  puts "filling FshugoTab"
+  json_data["fshugo_tab"].each do |entry|
+    FshugoTab.create( {:descr_id => entry["id"], :description => entry["description"] } )
   end
   
   # output this string - yet the function is called outside this block
@@ -187,6 +202,20 @@ when "extend"
   json_data["kind_tab"].each do |entry|
     unless KindTab.exists?(:description => entry["description"])
       KindTab.create( {:description => entry["description"] })
+    end
+  end
+  
+  puts "extending OsxTab"
+  json_data["osx_tab"].each do |entry|
+    unless OsxTab.exists?(:description => entry["description"])
+      OsxTab.create( {:description => entry["description"] })
+    end
+  end
+  
+  puts "extending FshugoTab"
+  json_data["fshugo_tab"].each do |entry|
+    unless FshugoTab.exists?(:description => entry["description"])
+      FshugoTab.create( {:description => entry["description"] })
     end
   end
   

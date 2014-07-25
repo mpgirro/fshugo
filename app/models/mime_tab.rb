@@ -1,3 +1,3 @@
 class MimeTab < ActiveRecord::Base
-    attr_accessible :id, :description
+    attr_accessible :description
 end
