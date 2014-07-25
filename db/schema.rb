@@ -11,21 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140725111502) do
+ActiveRecord::Schema.define(version: 20140725112800) do
 
-  create_table "file_structure_entities", force: true do |t|
-    t.string   "path"
-    t.integer  "bytes"
-    t.datetime "ctime"
-    t.datetime "mtime"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "file_count"
-    t.integer  "item_count"
-    t.integer  "mime_id"
-    t.integer  "kind_id"
-    t.string   "entity_type"
-  end
+# Could not dump table "file_structure_entities" because of following NoMethodError
+#   undefined method `[]' for nil:NilClass
 
   create_table "fshugo_tabs", force: true do |t|
     t.string   "description"

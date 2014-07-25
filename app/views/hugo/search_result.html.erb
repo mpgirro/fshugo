@@ -31,7 +31,13 @@
 					<% if item["entity_type"] == "directory" %>
 						Directory <span class="sepdot">•</span> <%= item["item_count"] %> Items
 					<% else %>
-						<%= KindTab.find(item["kind_id"]).description %>
+						<%= KindTab.find(item["kind_id"]).description rescue "unavailable" %>
+					<% end %>
+				</p>
+				<p class="item_descr">
+					<% item["fshugo_tags"].each do |tag_id| %>
+						<%= FshugoTab.find(tag_id).description %>
+						<span class="sepdot">•</span> 
 					<% end %>
 				</p>
 				<p class="item_path">

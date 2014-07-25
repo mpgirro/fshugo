@@ -55,7 +55,7 @@ def parse_fstruct(fstruct)
     
     case entry["type"]
     when "directory"
-      FileStructureEntity.create( { 
+      fse = { 
         :entity_type => "directory",
         :path => entry["path"],
         :bytes => entry["bytes"],
@@ -63,28 +63,65 @@ def parse_fstruct(fstruct)
         :mtime => entry["mtime"],
         :file_count => entry["file_count"],
         :item_count => entry["item_count"]
-      } )
+      }
+      osx_tags = [] # will be array of db ids
+      unless entry["osx_tags"].nil?
+        entry["osx_tags"].each do |json_id|
+          tag = $osx_tab.get_descr(json_id)
+          osx_tags << OsxTab.where(:description => tag).ids.first
+        end
+      end
+
+      fshugo_tags = [] # will be array of db ids
+      unless entry["fshugo_tags"].nil?
+        entry["fshugo_tags"].each do |json_id|
+          tag = $fshugo_tab.get_descr(json_id)
+          fshugo_tags << FshugoTab.where(:description => tag).ids.first
+        end
+      end
+      fse[:osx_tags] = osx_tags
+      fse[:fshugo_tags] = fshugo_tags
+      FileStructureEntity.create( fse )
       
       parse_fstruct(entry["file_list"])
       
     when "file"
       
       # subsitute the lookup table ids with them from the db
-      mime_descr = @mime_tab.get_descr(entry["mime_id"])
-      kind_descr = @kind_tab.get_descr(entry["kind_id"])
-
+      mime_descr = $mime_tab.get_descr(entry["mime_id"])
       mime_id = MimeTab.where(:description => mime_descr).ids.first
-      kind_id = KindTab.where(:description => kind_descr).ids.first
       
-      FileStructureEntity.create( { 
+      kind_descr = $kind_tab.get_descr(entry["kind_id"])
+      kind_id = KindTab.where(:description => kind_descr).ids.first
+
+      osx_tags = [] # will be array of db ids
+      unless entry["osx_tags"].nil?
+        entry["osx_tags"].each do |json_id|
+          tag = $osx_tab.get_descr(json_id)
+          osx_tags << OsxTab.where(:description => tag).ids.first
+        end
+      end
+
+      fshugo_tags = [] # will be array of db ids
+      unless entry["fshugo_tags"].nil?
+        entry["fshugo_tags"].each do |json_id|
+          tag = $fshugo_tab.get_descr(json_id)
+          fshugo_tags << FshugoTab.where(:description => tag).ids.first
+        end
+      end
+      
+      fse = { 
         :entity_type => "file",
         :path => entry["path"],
         :bytes => entry["bytes"],
         :ctime => entry["ctime"],
-        :mtime => entry["mtime"],
-        :mime_id => mime_id,
-        :kind_id => kind_id
-      } )
+        :mtime => entry["mtime"]
+      }
+      fse[:mime_id] = mime_id
+      fse[:kind_id] = kind_id
+      fse[:osx_tags] = osx_tags
+      fse[:fshugo_tags] = fshugo_tags
+      FileStructureEntity.create( fse )
     end
   end
 end
@@ -144,17 +181,17 @@ json_data = JSON.parse(json_string, :max_nesting => 100)
 
 
 # first we have to reconstruct the lookup tables (we need them globally)
-@mime_tab = LookupTable.new
-@mime_tab.from_json(json_data["mime_tab"])
+$mime_tab = LookupTable.new
+$mime_tab.from_json(json_data["mime_tab"])
 
-@kind_tab = LookupTable.new
-@kind_tab.from_json(json_data["kind_tab"])
+$kind_tab = LookupTable.new
+$kind_tab.from_json(json_data["kind_tab"])
 
-@osx_tab = LookupTable.new
-@osx_tab.from_json(json_data["osx_tab"])
+$osx_tab = LookupTable.new
+$osx_tab.from_json(json_data["osx_tab"])
 
-@fshugo_tab = LookupTable.new
-@fshugo_tab.from_json(json_data["fshugo_tab"])
+$fshugo_tab = LookupTable.new
+$fshugo_tab.from_json(json_data["fshugo_tab"])
 
 case inv_operation
 when "new"
@@ -167,23 +204,23 @@ when "new"
   # make mime tab
   puts "filling MimeTab"
   json_data["mime_tab"].each do |entry|
-    MimeTab.create( {:descr_id => entry["id"], :description => entry["description"] })
+    MimeTab.create( {:description => entry["description"] })
   end
   
   # make kind tab
   puts "filling KindTab"
   json_data["kind_tab"].each do |entry|
-    KindTab.create( {:descr_id => entry["id"], :description => entry["description"] } )
+    KindTab.create( {:description => entry["description"] } )
   end
   
   puts "filling OsxTab"
   json_data["osx_tab"].each do |entry|
-    OsxTab.create( {:descr_id => entry["id"], :description => entry["description"] } )
+    OsxTab.create( {:description => entry["description"] } )
   end
   
   puts "filling FshugoTab"
   json_data["fshugo_tab"].each do |entry|
-    FshugoTab.create( {:descr_id => entry["id"], :description => entry["description"] } )
+    FshugoTab.create( {:description => entry["description"] })
   end
   
   # output this string - yet the function is called outside this block
