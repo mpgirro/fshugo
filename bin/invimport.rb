@@ -18,7 +18,7 @@ class LookupTable
   
   def initialize
     @descr_map = Hash.new
-    @idcursor = 0
+    @idcursor = 1
   end  
   
   def contains?(descr)
@@ -53,76 +53,56 @@ def parse_fstruct(fstruct)
   
   fstruct.each do |entry|
     
+    fse = { 
+      :path => entry["path"],
+      :bytes => entry["bytes"],
+      :ctime => entry["ctime"],
+      :mtime => entry["mtime"]
+    }
+    
     case entry["type"]
     when "directory"
-      fse = { 
-        :entity_type => "directory",
-        :path => entry["path"],
-        :bytes => entry["bytes"],
-        :ctime => entry["ctime"],
-        :mtime => entry["mtime"],
-        :file_count => entry["file_count"],
-        :item_count => entry["item_count"]
-      }
-      osx_tags = [] # will be array of db ids
-      unless entry["osx_tags"].nil?
-        entry["osx_tags"].each do |json_id|
-          tag = $osx_tab.get_descr(json_id)
-          osx_tags << OsxTab.where(:description => tag).ids.first
-        end
-      end
+      
+      fse[:entity_type] = "directory"
+      fse[:file_count] = entry["file_count"]
+      fse[:item_count] = entry["item_count"]
 
-      fshugo_tags = [] # will be array of db ids
-      unless entry["fshugo_tags"].nil?
-        entry["fshugo_tags"].each do |json_id|
-          tag = $fshugo_tab.get_descr(json_id)
-          fshugo_tags << FshugoTab.where(:description => tag).ids.first
-        end
-      end
-      fse[:osx_tags] = osx_tags
-      fse[:fshugo_tags] = fshugo_tags
-      FileStructureEntity.create( fse )
-      
-      parse_fstruct(entry["file_list"])
-      
     when "file"
+      
+      fse[:entity_type] = "file"
       
       # subsitute the lookup table ids with them from the db
       mime_descr = $mime_tab.get_descr(entry["mime_id"])
       mime_id = MimeTab.where(:description => mime_descr).ids.first
+      fse[:mime_id] = mime_id
       
       kind_descr = $kind_tab.get_descr(entry["kind_id"])
       kind_id = KindTab.where(:description => kind_descr).ids.first
-
-      osx_tags = [] # will be array of db ids
-      unless entry["osx_tags"].nil?
-        entry["osx_tags"].each do |json_id|
-          tag = $osx_tab.get_descr(json_id)
-          osx_tags << OsxTab.where(:description => tag).ids.first
-        end
-      end
-
-      fshugo_tags = [] # will be array of db ids
-      unless entry["fshugo_tags"].nil?
-        entry["fshugo_tags"].each do |json_id|
-          tag = $fshugo_tab.get_descr(json_id)
-          fshugo_tags << FshugoTab.where(:description => tag).ids.first
-        end
-      end
-      
-      fse = { 
-        :entity_type => "file",
-        :path => entry["path"],
-        :bytes => entry["bytes"],
-        :ctime => entry["ctime"],
-        :mtime => entry["mtime"]
-      }
-      fse[:mime_id] = mime_id
       fse[:kind_id] = kind_id
-      fse[:osx_tags] = osx_tags
-      fse[:fshugo_tags] = fshugo_tags
-      FileStructureEntity.create( fse )
     end
+    
+    osx_tags = [] # will be array of db ids
+    unless entry["osx_tags"].nil?
+      entry["osx_tags"].each do |json_id|
+        tag = $osx_tab.get_descr(json_id)
+        osx_tags << OsxTab.where(:description => tag).ids.first
+      end
+    end
+    
+    fshugo_tags = [] # will be array of db ids
+    unless entry["fshugo_tags"].nil?
+      entry["fshugo_tags"].each do |json_id|
+        tag = $fshugo_tab.get_descr(json_id)
+        fshugo_tags << FshugoTab.where(:description => tag).ids.first
+      end
+    end
+    fse[:osx_tags] = osx_tags
+    fse[:fshugo_tags] = fshugo_tags
+    
+    FileStructureEntity.create( fse )
+    
+    parse_fstruct(entry["file_list"]) if entry["type"] == "directory"
+    
   end
 end
 
@@ -199,6 +179,8 @@ when "new"
   puts "dropping old database entries"
   MimeTab.delete_all
   KindTab.delete_all
+  OsxTab.delete_all
+  FshugoTab.delete_all
   FileStructureEntity.delete_all
   
   # make mime tab
