@@ -34,10 +34,18 @@
 						<%= KindTab.find(item["kind_id"]).description rescue "unavailable" %>
 					<% end %>
 				</p>
-				<p class="item_descr">
-					<% item["fshugo_tags"].each do |tag_id| %>
-						<%= FshugoTab.find(tag_id).description %>
-						<span class="sepdot">•</span> 
+				<p class="item_tags">
+					<% unless item["fshugo_tags"].nil? || item["fshugo_tags"].empty? %>
+						Tags: 
+						<% 
+						tags = []
+						puts "tag ids: #{item["fshugo_tags"]}"
+						item["fshugo_tags"].each do |tag_id|
+							tags << FshugoTab.find(tag_id).description
+						end 
+						puts "tags: #{tags}"
+						%>
+						<%= tags.join("<span class=\"sepdot\">•</span>") %>
 					<% end %>
 				</p>
 				<p class="item_path">
