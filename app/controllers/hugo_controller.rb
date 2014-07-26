@@ -6,7 +6,7 @@ class HugoController < ApplicationController
     return if @query.nil?
     return if @query == ""
     
-    puts "searching for: #{capture_path(@query)}"
+    puts "searching for: #{unmask_query(@query)}"
     
     @keywords = @query.split(" ")
     
@@ -16,7 +16,7 @@ class HugoController < ApplicationController
       # substitute wildcard symbols
       part = part.gsub("%", "\%")
       part = part.gsub("_", "\_")
-      part = capture_path(part) # make sure dirlinks are searched correctly
+      part = unmask_query(part) # make sure dirlinks are searched correctly
       part =  "%" + part + "%"
       conditions << part
     end

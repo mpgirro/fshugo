@@ -3,19 +3,19 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   
-  helper_method :escape_path, :capture_path
+  helper_method :mask_query, :unmask_query
   
-  QUERY_BLANK_ESCAPE = "$$$"
+  BLANK_REPLACE = "$$$"
   
   # escape blank symbols with a special symbol sequence so 
   # they may not be confused with keyword separation signs
-  def escape_path(path)
-    return path.gsub(" ", QUERY_BLANK_ESCAPE)
+  def mask_query(path)
+    return path.gsub(" ", BLANK_REPLACE)
   end
   
   # replace the blank symbol escape sequence with blanks again
-  def capture_path(path)
-    return path.gsub(QUERY_BLANK_ESCAPE, " ")
+  def unmask_query(path)
+    return path.gsub(BLANK_REPLACE, " ")
   end
   
 end
