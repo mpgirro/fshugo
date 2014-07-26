@@ -22,8 +22,7 @@ class LookupTable
   end  
   
   def contains?(descr)
-    return false if descr == ""
-    return @descr_map.has_value?(descr)
+    return descr == "" ? false : @descr_map.has_value?(descr)
   end
   
   def add(descr)
@@ -38,12 +37,8 @@ class LookupTable
   end
   
   def from_json(json)
-    #self.descr_map = Hash.new
-    #self.idcursor = 0
     json.each do |entry|
-      unless self.contains?(entry["description"])
-        self.add(entry["description"])
-      end
+      self.add(entry["description"]) unless self.contains?(entry["description"])
     end
   end
 end # LookupTable
@@ -62,13 +57,10 @@ def parse_fstruct(fstruct)
     
     case entry["type"]
     when "directory"
-      
       fse[:entity_type] = "directory"
       fse[:file_count] = entry["file_count"]
       fse[:item_count] = entry["item_count"]
-
     when "file"
-      
       fse[:entity_type] = "file"
       
       # subsitute the lookup table ids with them from the db
@@ -221,36 +213,28 @@ when "extend"
   puts "extending MimeTab"
   unless json_data["mime_tab"].nil?
     json_data["mime_tab"].each do |entry|
-      unless MimeTab.exists?(:description => entry["description"])
-        MimeTab.create( {:description => entry["description"] })
-      end
+      MimeTab.create( {:description => entry["description"] }) unless MimeTab.exists?(:description => entry["description"])
     end
   end
   
   puts "extending KindTab"
   unless json_data["kind_tab"].nil?
     json_data["kind_tab"].each do |entry|
-      unless KindTab.exists?(:description => entry["description"])
-        KindTab.create( {:description => entry["description"] })
-      end
+      KindTab.create( {:description => entry["description"] }) unless KindTab.exists?(:description => entry["description"])
     end
   end
   
   puts "extending OsxTab"
   unless json_data["osx_tab"].nil?
     json_data["osx_tab"].each do |entry|
-      unless OsxTab.exists?(:description => entry["description"])
-        OsxTab.create( {:description => entry["description"] })
-      end
+      OsxTab.create( {:description => entry["description"] }) unless OsxTab.exists?(:description => entry["description"])
     end
   end
   
   puts "extending FshugoTab"
   unless json_data["fshugo_tab"].nil?
     json_data["fshugo_tab"].each do |entry|
-      unless FshugoTab.exists?(:description => entry["description"])
-        FshugoTab.create( {:description => entry["description"] })
-      end
+      FshugoTab.create( {:description => entry["description"] }) unless FshugoTab.exists?(:description => entry["description"])
     end
   end
   
