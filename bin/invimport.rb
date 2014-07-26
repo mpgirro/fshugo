@@ -162,16 +162,16 @@ json_data = JSON.parse(json_string, :max_nesting => 100)
 
 # first we have to reconstruct the lookup tables (we need them globally)
 $mime_tab = LookupTable.new
-$mime_tab.from_json(json_data["mime_tab"])
+$mime_tab.from_json(json_data["mime_tab"]) unless json_data["mime_tab"].nil?
 
 $kind_tab = LookupTable.new
-$kind_tab.from_json(json_data["kind_tab"])
+$kind_tab.from_json(json_data["kind_tab"]) unless json_data["kind_tab"].nil?
 
 $osx_tab = LookupTable.new
-$osx_tab.from_json(json_data["osx_tab"])
+$osx_tab.from_json(json_data["osx_tab"]) unless json_data["osx_tab"].nil?
 
 $fshugo_tab = LookupTable.new
-$fshugo_tab.from_json(json_data["fshugo_tab"])
+$fshugo_tab.from_json(json_data["fshugo_tab"]) unless json_data["fshugo_tab"].nil? 
 
 case inv_operation
 when "new"
@@ -185,24 +185,32 @@ when "new"
   
   # make mime tab
   puts "filling MimeTab"
-  json_data["mime_tab"].each do |entry|
-    MimeTab.create( {:description => entry["description"] })
+  unless json_data["mime_tab"].nil?
+    json_data["mime_tab"].each do |entry|
+      MimeTab.create( {:description => entry["description"] })
+    end
   end
   
   # make kind tab
   puts "filling KindTab"
-  json_data["kind_tab"].each do |entry|
-    KindTab.create( {:description => entry["description"] } )
+  unless json_data["kind_tab"].nil?
+    json_data["kind_tab"].each do |entry|
+      KindTab.create( {:description => entry["description"] } )
+    end
   end
   
   puts "filling OsxTab"
-  json_data["osx_tab"].each do |entry|
-    OsxTab.create( {:description => entry["description"] } )
-  end
+  unless json_data["osx_tab"].nil?
+    json_data["osx_tab"].each do |entry|
+      OsxTab.create( {:description => entry["description"] } )
+    end
+  end  
   
   puts "filling FshugoTab"
-  json_data["fshugo_tab"].each do |entry|
-    FshugoTab.create( {:description => entry["description"] })
+  unless json_data["fshugo_tab"].nil?
+    json_data["fshugo_tab"].each do |entry|
+      FshugoTab.create( {:description => entry["description"] })
+    end
   end
   
   # output this string - yet the function is called outside this block
@@ -211,30 +219,38 @@ when "new"
 when "extend"
 
   puts "extending MimeTab"
-  json_data["mime_tab"].each do |entry|
-    unless MimeTab.exists?(:description => entry["description"])
-      MimeTab.create( {:description => entry["description"] })
+  unless json_data["mime_tab"].nil?
+    json_data["mime_tab"].each do |entry|
+      unless MimeTab.exists?(:description => entry["description"])
+        MimeTab.create( {:description => entry["description"] })
+      end
     end
   end
   
   puts "extending KindTab"
-  json_data["kind_tab"].each do |entry|
-    unless KindTab.exists?(:description => entry["description"])
-      KindTab.create( {:description => entry["description"] })
+  unless json_data["kind_tab"].nil?
+    json_data["kind_tab"].each do |entry|
+      unless KindTab.exists?(:description => entry["description"])
+        KindTab.create( {:description => entry["description"] })
+      end
     end
   end
   
   puts "extending OsxTab"
-  json_data["osx_tab"].each do |entry|
-    unless OsxTab.exists?(:description => entry["description"])
-      OsxTab.create( {:description => entry["description"] })
+  unless json_data["osx_tab"].nil?
+    json_data["osx_tab"].each do |entry|
+      unless OsxTab.exists?(:description => entry["description"])
+        OsxTab.create( {:description => entry["description"] })
+      end
     end
   end
   
   puts "extending FshugoTab"
-  json_data["fshugo_tab"].each do |entry|
-    unless FshugoTab.exists?(:description => entry["description"])
-      FshugoTab.create( {:description => entry["description"] })
+  unless json_data["fshugo_tab"].nil?
+    json_data["fshugo_tab"].each do |entry|
+      unless FshugoTab.exists?(:description => entry["description"])
+        FshugoTab.create( {:description => entry["description"] })
+      end
     end
   end
   
