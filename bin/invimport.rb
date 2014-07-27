@@ -14,31 +14,31 @@ end
 
 class LookupTable
   
-  attr_accessor :descr_map, :idcursor
+  attr_accessor :val_map, :idcursor
   
   def initialize
-    @descr_map = Hash.new
+    @val_map = Hash.new
     @idcursor = 1
   end  
   
   def contains?(descr)
-    return descr == "" ? false : @descr_map.has_value?(descr)
+    return descr == "" ? false : @val_map.has_value?(descr)
   end
   
   def add(descr)
     unless descr == ""
-      @descr_map[idcursor] = descr
+      @val_map[idcursor] = descr
       @idcursor += 1
     end
   end
 
-  def get_descr(id)
-    return @descr_map[id]
+  def get_value(id)
+    return @val_map[id]
   end
   
   def from_json(json)
     json.each do |entry|
-      self.add(entry["description"]) unless self.contains?(entry["description"])
+      self.add(entry["value"]) unless self.contains?(entry["value"])
     end
   end
 end # LookupTable
@@ -64,11 +64,11 @@ def parse_fstruct(fstruct)
       fse[:entity_type] = "file"
       
       # subsitute the lookup table ids with them from the db
-      mime_descr = $mime_tab.get_descr(entry["mime_id"])
+      mime_descr = $mime_tab.get_value(entry["mime_id"])
       mime_id = MimeTab.where(:description => mime_descr).ids.first
       fse[:mime_id] = mime_id
       
-      kind_descr = $kind_tab.get_descr(entry["kind_id"])
+      kind_descr = $kind_tab.get_value(entry["kind_id"])
       kind_id = KindTab.where(:description => kind_descr).ids.first
       fse[:kind_id] = kind_id
     end
@@ -76,7 +76,7 @@ def parse_fstruct(fstruct)
     osx_tags = [] # will be array of db ids
     unless entry["osx_tags"].nil?
       entry["osx_tags"].each do |json_id|
-        tag = $osx_tab.get_descr(json_id)
+        tag = $osx_tab.get_value(json_id)
         osx_tags << OsxTab.where(:description => tag).ids.first
       end
     end
@@ -84,14 +84,13 @@ def parse_fstruct(fstruct)
     fshugo_tags = [] # will be array of db ids
     unless entry["fshugo_tags"].nil?
       entry["fshugo_tags"].each do |json_id|
-        tag = $fshugo_tab.get_descr(json_id)
+        tag = $fshugo_tab.get_value(json_id)
         fshugo_tags << FshugoTab.where(:description => tag).ids.first
       end
     end
     fse[:osx_tags] = osx_tags
     fse[:fshugo_tags] = fshugo_tags
     
-    FileStructureEntity.create( fse )
     FileStructure.create(fse)
     
     parse_fstruct(entry["file_list"]) if entry["type"] == "directory"
@@ -184,13 +183,13 @@ when "new"
   KindTab.delete_all
   OsxTab.delete_all
   FshugoTab.delete_all
-  FileStructureEntity.delete_all
+  FileStructure.delete_all
   
   # make mime tab
   puts "filling MimeTab"
   unless json_data["mime_tab"].nil?
     json_data["mime_tab"].each do |entry|
-      MimeTab.create( {:description => entry["description"] })
+      MimeTab.create( {:description => entry["value"] })
     end
   end
   
@@ -198,26 +197,25 @@ when "new"
   puts "filling KindTab"
   unless json_data["kind_tab"].nil?
     json_data["kind_tab"].each do |entry|
-      KindTab.create( {:description => entry["description"] } )
+      KindTab.create( {:description => entry["value"] } )
     end
   end
   
   puts "filling OsxTab"
   unless json_data["osx_tab"].nil?
     json_data["osx_tab"].each do |entry|
-      OsxTab.create( {:description => entry["description"] } )
+      OsxTab.create( {:description => entry["value"] } )
     end
   end  
   
   puts "filling FshugoTab"
   unless json_data["fshugo_tab"].nil?
     json_data["fshugo_tab"].each do |entry|
-      FshugoTab.create( {:description => entry["description"] })
+      FshugoTab.create( {:description => entry["value"] })
     end
   end
   
   # output this string - yet the function is called outside this block
-  puts "filling FileStructureEntity"
   puts "filling FileStructure"
 
 when "extend"
@@ -225,33 +223,32 @@ when "extend"
   puts "extending MimeTab"
   unless json_data["mime_tab"].nil?
     json_data["mime_tab"].each do |entry|
-      MimeTab.create( {:description => entry["description"] }) unless MimeTab.exists?(:description => entry["description"])
+      MimeTab.create( {:description => entry["value"] }) unless MimeTab.exists?(:description => entry["value"])
     end
   end
   
   puts "extending KindTab"
   unless json_data["kind_tab"].nil?
     json_data["kind_tab"].each do |entry|
-      KindTab.create( {:description => entry["description"] }) unless KindTab.exists?(:description => entry["description"])
+      KindTab.create( {:description => entry["value"] }) unless KindTab.exists?(:description => entry["value"])
     end
   end
   
   puts "extending OsxTab"
   unless json_data["osx_tab"].nil?
     json_data["osx_tab"].each do |entry|
-      OsxTab.create( {:description => entry["description"] }) unless OsxTab.exists?(:description => entry["description"])
+      OsxTab.create( {:description => entry["value"] }) unless OsxTab.exists?(:description => entry["value"])
     end
   end
   
   puts "extending FshugoTab"
   unless json_data["fshugo_tab"].nil?
     json_data["fshugo_tab"].each do |entry|
-      FshugoTab.create( {:description => entry["description"] }) unless FshugoTab.exists?(:description => entry["description"])
+      FshugoTab.create( {:description => entry["value"] }) unless FshugoTab.exists?(:description => entry["value"])
     end
   end
   
   # output this string - yet the function is called outside this block
-  puts "extending FileStructureEntities"
   puts "extending FileStructure"
 
 end
