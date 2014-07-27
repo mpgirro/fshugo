@@ -31,7 +31,7 @@
 					<% if item["entity_type"] == "directory" %>
 						Directory <span class="sepdot">•</span> <%= item["item_count"] %> Items
 					<% else %>
-						<%= KindTab.find(item["kind_id"]).description rescue "unavailable" %>
+						<%= MagicDescription.find(item["magicdescr"]).magicdescr rescue "unavailable" %>
 					<% end %>
 				</p>
 				<p class="item_tags">
@@ -41,7 +41,7 @@
 							<% 
 							tags = []
 							item["fshugo_tags"].each do |tag_id|
-								tags << FshugoTab.find(tag_id).description
+								tags << FshugoTag.find(tag_id).tag
 							end 
 							%>
 							<%= tags.join("<span class=\"sepdot\">•</span>") %>

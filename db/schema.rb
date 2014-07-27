@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140727074112) do
+ActiveRecord::Schema.define(version: 20140727083822) do
 
   create_table "file_structures", force: true do |t|
     t.datetime "created_at"
@@ -23,36 +23,36 @@ ActiveRecord::Schema.define(version: 20140727074112) do
     t.string   "entity_type"
     t.integer  "file_count"
     t.integer  "item_count"
-    t.integer  "mime_id"
-    t.integer  "kind_id"
     t.string   "osx_tags"
     t.string   "fshugo_tags"
+    t.integer  "mimetype"
+    t.integer  "magicdescr"
   end
 
-  create_table "fshugo_tabs", force: true do |t|
-    t.string   "description"
+  create_table "fshugo_tags", force: true do |t|
+    t.string   "ad"
+    t.string   "tag"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "kind_tabs", force: true do |t|
-    t.string   "description"
+  create_table "magic_descriptions", force: true do |t|
+    t.string   "ad"
+    t.string   "magicdescr"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "kind_tabs", ["description"], name: "index_kind_tabs_on_description", unique: true
-
-  create_table "mime_tabs", force: true do |t|
-    t.string   "description"
+  create_table "mime_types", force: true do |t|
+    t.string   "ad"
+    t.string   "mimetype"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "mime_tabs", ["description"], name: "index_mime_tabs_on_description", unique: true
-
-  create_table "osx_tabs", force: true do |t|
-    t.string   "description"
+  create_table "osx_tags", force: true do |t|
+    t.string   "ad"
+    t.string   "tag"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

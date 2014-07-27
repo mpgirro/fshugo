@@ -65,19 +65,19 @@ def parse_fstruct(fstruct)
       
       # subsitute the lookup table ids with them from the db
       mime_descr = $mime_tab.get_value(entry["mime_id"])
-      mime_id = MimeTab.where(:description => mime_descr).ids.first
-      fse[:mime_id] = mime_id
+      mime_id = MimeType.where(:mimetype => mime_descr).ids.first
+      fse[:mimetype] = mime_id
       
-      kind_descr = $kind_tab.get_value(entry["kind_id"])
-      kind_id = KindTab.where(:description => kind_descr).ids.first
-      fse[:kind_id] = kind_id
+      magic_descr = $magic_tab.get_value(entry["magicdescr"])
+      magic_id = MagicDescription.where(:magicdescr => magic_descr).ids.first
+      fse[:magicdescr] = magic_id
     end
     
     osx_tags = [] # will be array of db ids
     unless entry["osx_tags"].nil?
       entry["osx_tags"].each do |json_id|
         tag = $osx_tab.get_value(json_id)
-        osx_tags << OsxTab.where(:description => tag).ids.first
+        osx_tags << OsxTag.where(:tag => tag).ids.first
       end
     end
     
@@ -85,7 +85,7 @@ def parse_fstruct(fstruct)
     unless entry["fshugo_tags"].nil?
       entry["fshugo_tags"].each do |json_id|
         tag = $fshugo_tab.get_value(json_id)
-        fshugo_tags << FshugoTab.where(:description => tag).ids.first
+        fshugo_tags << FshugoTag.where(:tag => tag).ids.first
       end
     end
     fse[:osx_tags] = osx_tags
@@ -166,8 +166,8 @@ json_data = JSON.parse(json_string, :max_nesting => 100)
 $mime_tab = LookupTable.new
 $mime_tab.from_json(json_data["mime_tab"]) unless json_data["mime_tab"].nil?
 
-$kind_tab = LookupTable.new
-$kind_tab.from_json(json_data["kind_tab"]) unless json_data["kind_tab"].nil?
+$magic_tab = LookupTable.new
+$magic_tab.from_json(json_data["magic_tab"]) unless json_data["magic_tab"].nil?
 
 $osx_tab = LookupTable.new
 $osx_tab.from_json(json_data["osx_tab"]) unless json_data["osx_tab"].nil?
@@ -178,40 +178,41 @@ $fshugo_tab.from_json(json_data["fshugo_tab"]) unless json_data["fshugo_tab"].ni
 case inv_operation
 when "new"
   
-  puts "dropping old database entries"
-  MimeTab.delete_all
-  KindTab.delete_all
-  OsxTab.delete_all
-  FshugoTab.delete_all
+  puts "dropping old database entries"  
+  MimeType.delete_all
+  MagicDescription.delete_all
+  OsxTag.delete_all
+  FshugoTag.delete_all
+  
   FileStructure.delete_all
   
   # make mime tab
-  puts "filling MimeTab"
+  puts "filling MimeType"
   unless json_data["mime_tab"].nil?
     json_data["mime_tab"].each do |entry|
-      MimeTab.create( {:description => entry["value"] })
+      MimeType.create( {:mimetype => entry["value"] })
     end
   end
   
   # make kind tab
-  puts "filling KindTab"
-  unless json_data["kind_tab"].nil?
-    json_data["kind_tab"].each do |entry|
-      KindTab.create( {:description => entry["value"] } )
+  puts "filling MagicDescription"
+  unless json_data["magic_tab"].nil?
+    json_data["magic_tab"].each do |entry|
+      MagicDescription.create( {:magicdescr => entry["value"] } )
     end
   end
   
-  puts "filling OsxTab"
+  puts "filling OsxTag"
   unless json_data["osx_tab"].nil?
     json_data["osx_tab"].each do |entry|
-      OsxTab.create( {:description => entry["value"] } )
+      OsxTag.create( {:tag => entry["value"] } )
     end
   end  
   
-  puts "filling FshugoTab"
+  puts "filling FshugoTag"
   unless json_data["fshugo_tab"].nil?
     json_data["fshugo_tab"].each do |entry|
-      FshugoTab.create( {:description => entry["value"] })
+      FshugoTag.create( {:tag => entry["value"] })
     end
   end
   
@@ -220,31 +221,31 @@ when "new"
 
 when "extend"
 
-  puts "extending MimeTab"
+  puts "extending MimeType"
   unless json_data["mime_tab"].nil?
     json_data["mime_tab"].each do |entry|
-      MimeTab.create( {:description => entry["value"] }) unless MimeTab.exists?(:description => entry["value"])
+      MimeType.create( {:mimetype => entry["value"] }) unless MimeType.exists?(:mimetype => entry["value"])
     end
   end
   
-  puts "extending KindTab"
-  unless json_data["kind_tab"].nil?
-    json_data["kind_tab"].each do |entry|
-      KindTab.create( {:description => entry["value"] }) unless KindTab.exists?(:description => entry["value"])
+  puts "extending MagicDescription"
+  unless json_data["magic_tab"].nil?
+    json_data["magic_tab"].each do |entry|
+      MagicDescription.create( {:magicdescr => entry["value"] }) unless MagicDescription.exists?(:magicdescr => entry["value"])
     end
   end
   
-  puts "extending OsxTab"
+  puts "extending OsxTag"
   unless json_data["osx_tab"].nil?
     json_data["osx_tab"].each do |entry|
-      OsxTab.create( {:description => entry["value"] }) unless OsxTab.exists?(:description => entry["value"])
+      OsxTag.create( {:tag => entry["value"] }) unless OsxTag.exists?(:tag => entry["value"])
     end
   end
   
-  puts "extending FshugoTab"
+  puts "extending FshugoTag"
   unless json_data["fshugo_tab"].nil?
     json_data["fshugo_tab"].each do |entry|
-      FshugoTab.create( {:description => entry["value"] }) unless FshugoTab.exists?(:description => entry["value"])
+      FshugoTag.create( {:tag => entry["value"] }) unless FshugoTag.exists?(:tag => entry["value"])
     end
   end
   
