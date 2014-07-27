@@ -22,8 +22,8 @@ class HugoController < ApplicationController
     condition += condition_keywords # => ["path like ? and path like ?", "keyword1", "keyword2"]
     
     # do the search
-    @results = FileStructureEntity.where(condition)
-    #@results = FileStructureEntity.where(condition).to_a.map(&:serializable_hash) # ActiveRecord to Array
+    @results = FileStructure.where(condition)
+    #@results = FileStructure.where(condition).to_a.map(&:serializable_hash) # ActiveRecord to Array
 
     # do the rating
     rate_results unless @results.nil? || @results.empty?
@@ -72,9 +72,10 @@ class HugoController < ApplicationController
   # smallest will be mapped to 1
   private
   def normalize_lowscores(score_map)
-    bestscore = (bestscore < VERY_SMALL ? VERY_SMALL : score_map.values.min )
+    bestscore = score_map.values.min
+    bestscore = (bestscore < VERY_SMALL ? VERY_SMALL : bestscore )
     score_map.each do |resitem,score|
-      score = vsmall if score < vsmall
+      score = VERY_SMALL if score < VERY_SMALL
       score_map[resitem] = bestscore.to_f / score.to_f
     end
     return score_map
@@ -85,7 +86,8 @@ class HugoController < ApplicationController
   # highest will be mapped to 1
   private
   def normalize_highscores(score_map)
-    bestscore = (bestscore < VERY_SMALL ? VERY_SMALL : score_map.values.max )
+    bestscore = score_map.values.max
+    bestscore = (bestscore < VERY_SMALL ? VERY_SMALL : bestscore)
     score_map.each do |resitem,score|
       score_map[resitem] = score.to_f / bestscore.to_f
     end

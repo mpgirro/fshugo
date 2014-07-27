@@ -92,6 +92,7 @@ def parse_fstruct(fstruct)
     fse[:fshugo_tags] = fshugo_tags
     
     FileStructureEntity.create( fse )
+    FileStructure.create(fse)
     
     parse_fstruct(entry["file_list"]) if entry["type"] == "directory"
     
@@ -126,6 +127,16 @@ invfile_path  = ARGV[1]
 unless SUPPORTED_OPERATIONS.include?(inv_operation)
   puts "Operation \"#{inv_operation}\" not supported"
   puts USAGE
+  exit
+end
+
+if File.directory?(invfile_path)
+  puts "#{invfile_path} is a directory -- file needed!"
+  exit
+end
+
+unless File.exists?(invfile_path)
+  puts "File does not exist: #{invfile_path}"
   exit
 end
 
@@ -207,6 +218,7 @@ when "new"
   
   # output this string - yet the function is called outside this block
   puts "filling FileStructureEntity"
+  puts "filling FileStructure"
 
 when "extend"
 
@@ -240,6 +252,7 @@ when "extend"
   
   # output this string - yet the function is called outside this block
   puts "extending FileStructureEntities"
+  puts "extending FileStructure"
 
 end
 
