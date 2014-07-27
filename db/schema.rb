@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140727083822) do
+ActiveRecord::Schema.define(version: 20140727190412) do
 
   create_table "file_structures", force: true do |t|
     t.datetime "created_at"
@@ -30,31 +30,19 @@ ActiveRecord::Schema.define(version: 20140727083822) do
   end
 
   create_table "fshugo_tags", force: true do |t|
-    t.string   "ad"
-    t.string   "tag"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "tag"
   end
 
   create_table "magic_descriptions", force: true do |t|
-    t.string   "ad"
-    t.string   "magicdescr"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "magicdescr"
   end
 
   create_table "mime_types", force: true do |t|
-    t.string   "ad"
-    t.string   "mimetype"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "mimetype"
   end
 
   create_table "osx_tags", force: true do |t|
-    t.string   "ad"
-    t.string   "tag"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "tag"
   end
 
 end
