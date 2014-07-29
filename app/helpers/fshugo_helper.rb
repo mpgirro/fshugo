@@ -1,4 +1,4 @@
-module HugoHelper
+module FshugoHelper
   
   BYTES_IN_KB = 10**3
   BYTES_IN_MB = 10**6

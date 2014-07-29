@@ -1,4 +1,4 @@
-class HugoController < ApplicationController
+class FshugoController < ApplicationController
     
   VERY_SMALL = 0.000001 # avoid division by 0
     
@@ -29,7 +29,7 @@ class HugoController < ApplicationController
     rate_results unless @results.nil? || @results.empty?
   
     # render result page
-    render "hugo/search_result"
+    render "fshugo/search_result"
   end
   
   private

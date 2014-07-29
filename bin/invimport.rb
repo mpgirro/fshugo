@@ -64,7 +64,7 @@ def parse_fstruct(fstruct)
       fse[:entity_type] = "file"
       
       # subsitute the lookup table ids with them from the db
-      mime_descr = $mime_tab.get_value(entry["mime_id"])
+      mime_descr = $mime_tab.get_value(entry["mimetype"])
       mime_id = MimeType.where(:mimetype => mime_descr).ids.first
       fse[:mimetype] = mime_id
       
@@ -80,6 +80,7 @@ def parse_fstruct(fstruct)
         osx_tags << OsxTag.where(:tag => tag).ids.first
       end
     end
+    fse[:osx_tags] = osx_tags
     
     fshugo_tags = [] # will be array of db ids
     unless entry["fshugo_tags"].nil?
@@ -88,7 +89,6 @@ def parse_fstruct(fstruct)
         fshugo_tags << FshugoTag.where(:tag => tag).ids.first
       end
     end
-    fse[:osx_tags] = osx_tags
     fse[:fshugo_tags] = fshugo_tags
     
     FileStructure.create(fse)
