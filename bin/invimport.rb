@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'json'
+require 'progress_bar'
 
 module JSON
   class << self
@@ -64,20 +65,36 @@ def parse_fstruct(fstruct)
       fse[:entity_type] = "file"
       
       # subsitute the lookup table ids with them from the db
-      mime_descr = $mime_tab.get_value(entry["mimetype"])
-      mime_id = MimeType.where(:mimetype => mime_descr).ids.first
+      mime_descr = $mime_jsontab.get_value(entry["mimetype"])
+      if $mime_dbtab.has_key?(mime_descr)
+        mime_id = $mime_dbtab[mime_descr]
+      else
+        mime_id = MimeType.where(:mimetype => mime_descr).ids.first
+        $mime_dbtab[mime_descr] = mime_id
+      end 
       fse[:mimetype] = mime_id
       
-      magic_descr = $magic_tab.get_value(entry["magicdescr"])
-      magic_id = MagicDescription.where(:magicdescr => magic_descr).ids.first
+      magic_descr = $magic_jsontab.get_value(entry["magicdescr"])
+      if $magic_dbtab.has_key?(magic_descr)
+        magic_id = $magic_dbtab[magic_descr]
+      else
+        magic_id = MagicDescription.where(:magicdescr => magic_descr).ids.first
+        $magic_dbtab[magic_descr] = magic_id
+      end
       fse[:magicdescr] = magic_id
     end
     
     osx_tags = [] # will be array of db ids
     unless entry["osx_tags"].nil?
       entry["osx_tags"].each do |json_id|
-        tag = $osx_tab.get_value(json_id)
-        osx_tags << OsxTag.where(:tag => tag).ids.first
+        tag = $osx_jsontab.get_value(json_id)
+        if $osx_dbtab.has_key?(tag)
+          tag_id = $osx_dbtab[tag]
+        else
+          tag_id = OsxTag.where(:tag => tag).ids.first
+          $osx_dbtab[tag] = tag_id
+        end
+        osx_tags << tag_id
       end
     end
     fse[:osx_tags] = osx_tags
@@ -85,13 +102,21 @@ def parse_fstruct(fstruct)
     fshugo_tags = [] # will be array of db ids
     unless entry["fshugo_tags"].nil?
       entry["fshugo_tags"].each do |json_id|
-        tag = $fshugo_tab.get_value(json_id)
-        fshugo_tags << FshugoTag.where(:tag => tag).ids.first
+        tag = $fshugo_jsontab.get_value(json_id)
+        if $fshugo_dbtab.has_key?(tag)
+          tag_id = $fshugo_dbtab[tag]
+        else
+          tag_id = FshugoTag.where(:tag => tag).ids.first
+          $fshugo_dbtab[tag] = tag_id
+        end
+        fshugo_tags << tag_id
       end
     end
     fse[:fshugo_tags] = fshugo_tags
     
     FileStructure.create(fse)
+    
+    $progress_bar.increment!
     
     parse_fstruct(entry["file_list"]) if entry["type"] == "directory"
     
@@ -163,17 +188,26 @@ json_data = JSON.parse(json_string, :max_nesting => 100)
 
 
 # first we have to reconstruct the lookup tables (we need them globally)
-$mime_tab = LookupTable.new
-$mime_tab.from_json(json_data["mime_tab"]) unless json_data["mime_tab"].nil?
+$mime_jsontab = LookupTable.new
+$mime_jsontab.from_json(json_data["mime_tab"]) unless json_data["mime_tab"].nil?
 
-$magic_tab = LookupTable.new
-$magic_tab.from_json(json_data["magic_tab"]) unless json_data["magic_tab"].nil?
+$magic_jsontab = LookupTable.new
+$magic_jsontab.from_json(json_data["magic_tab"]) unless json_data["magic_tab"].nil?
 
-$osx_tab = LookupTable.new
-$osx_tab.from_json(json_data["osx_tab"]) unless json_data["osx_tab"].nil?
+$osx_jsontab = LookupTable.new
+$osx_jsontab.from_json(json_data["osx_tab"]) unless json_data["osx_tab"].nil?
 
-$fshugo_tab = LookupTable.new
-$fshugo_tab.from_json(json_data["fshugo_tab"]) unless json_data["fshugo_tab"].nil? 
+$fshugo_jsontab = LookupTable.new
+$fshugo_jsontab.from_json(json_data["fshugo_tab"]) unless json_data["fshugo_tab"].nil? 
+
+# the file structure entries get new ids (them from the db) 
+# for their mime type, magic description and tags. fetching
+# them takes quite long, so we will buffer them in the memory
+$mime_dbtab   = {}
+$magic_dbtab  = {}
+$osx_dbtab    = {}
+$fshugo_dbtab = {}
+
 
 case inv_operation
 when "new"
@@ -187,32 +221,45 @@ when "new"
   FileStructure.delete_all
   
   # make mime tab
-  puts "filling MimeType"
   unless json_data["mime_tab"].nil?
+    puts "filling MimeType"
+    $progress_bar = ProgressBar.new(json_data["mime_tab"].length, :bar, :counter)
+    
     json_data["mime_tab"].each do |entry|
       MimeType.create( {:mimetype => entry["value"] })
+      $progress_bar.increment!
     end
   end
   
   # make kind tab
-  puts "filling MagicDescription"
   unless json_data["magic_tab"].nil?
+    puts "filling MagicDescription"
+    $progress_bar = ProgressBar.new( json_data["magic_tab"].length, :bar, :counter)
+    
     json_data["magic_tab"].each do |entry|
       MagicDescription.create( {:magicdescr => entry["value"] } )
+      $progress_bar.increment!
     end
   end
   
-  puts "filling OsxTag"
   unless json_data["osx_tab"].nil?
+    puts "filling OsxTag"
+    $progress_bar = ProgressBar.new(json_data["osx_tab"].length, :bar, :counter)
+    
     json_data["osx_tab"].each do |entry|
       OsxTag.create( {:tag => entry["value"] } )
+      $progress_bar.increment!
     end
   end  
   
-  puts "filling FshugoTag"
+  
   unless json_data["fshugo_tab"].nil?
+    puts "filling FshugoTag"
+    $progress_bar = ProgressBar.new(json_data["fshugo_tab"].length, :bar, :counter)
+    
     json_data["fshugo_tab"].each do |entry|
       FshugoTag.create( {:tag => entry["value"] })
+      $progress_bar.increment!
     end
   end
   
@@ -221,31 +268,47 @@ when "new"
 
 when "extend"
 
-  puts "extending MimeType"
+  
   unless json_data["mime_tab"].nil?
+    puts "extending MimeType"
+    $progress_bar = ProgressBar.new(json_data["mime_tab"].length, :bar, :counter)
+    
     json_data["mime_tab"].each do |entry|
       MimeType.create( {:mimetype => entry["value"] }) unless MimeType.exists?(:mimetype => entry["value"])
+      $progress_bar.increment!
     end
   end
   
-  puts "extending MagicDescription"
+  
   unless json_data["magic_tab"].nil?
+    puts "extending MagicDescription"
+    $progress_bar = ProgressBar.new(json_data["magic_tab"].length, :bar, :counter)
+    
     json_data["magic_tab"].each do |entry|
       MagicDescription.create( {:magicdescr => entry["value"] }) unless MagicDescription.exists?(:magicdescr => entry["value"])
+      $progress_bar.increment!
     end
   end
   
-  puts "extending OsxTag"
+  
   unless json_data["osx_tab"].nil?
+    puts "extending OsxTag"
+    $progress_bar = ProgressBar.new(json_data["osx_tab"].length, :bar, :counter)
+    
     json_data["osx_tab"].each do |entry|
       OsxTag.create( {:tag => entry["value"] }) unless OsxTag.exists?(:tag => entry["value"])
+      $progress_bar.increment!
     end
   end
   
-  puts "extending FshugoTag"
+  
   unless json_data["fshugo_tab"].nil?
+    puts "extending FshugoTag"
+    $progress_bar = ProgressBar.new(json_data["fshugo_tab"].length, :bar, :counter)
+    
     json_data["fshugo_tab"].each do |entry|
       FshugoTag.create( {:tag => entry["value"] }) unless FshugoTag.exists?(:tag => entry["value"])
+      $progress_bar.increment!
     end
   end
   
@@ -253,6 +316,9 @@ when "extend"
   puts "extending FileStructure"
 
 end
+
+total_count = json_data["file_structure"].inject(0){|total_count,fs| total_count + fs['item_count'] }
+$progress_bar = ProgressBar.new(total_count, :bar, :counter, :percentage, :eta)
 
 parse_fstruct(json_data["file_structure"])
 
